@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import {StyleSheet, SafeAreaView, View, Text, StatusBar, Alert, LogBox} from 'react-native'
+import {StyleSheet, SafeAreaView, View, Text, StatusBar, Alert, LogBox, 
+    ActivityIndicator
+} from 'react-native'
 
 import { AntDesign } from '@expo/vector-icons'
+import SvgQRCode from 'react-native-qrcode-svg'
 
 import colors from '../config/colors'
 
@@ -13,10 +16,12 @@ import {getDatabase, ref, onValue} from 'firebase/database'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from '../components/Header'
 import Logo from '../components/Logo'
-import Box from '../components/Box'
+import ProfileImage from '../components/ProfileImage'
+import Button from '../components/Button'
 
 export default function UserDash({navigation}) {
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     // Firebase initialization
     const app = initializeApp(firebaseConfig)
@@ -43,6 +48,7 @@ export default function UserDash({navigation}) {
                 const findItem = arr.find(item=>item.email === email)
                 if(findItem){
                     setUser(findItem)
+                    setLoading(false)
                 }
             })
         }catch(e){
@@ -88,19 +94,33 @@ export default function UserDash({navigation}) {
         <View style={styles.container}>
             <Header text={headerText} action={headerAction} />
             <View style={styles.logo}>
-                <Logo />
+                {user?.img ? <ProfileImage uri={user.img} /> : <Logo />}
                 <Text style={styles.title}>Welcome, {user?.fullname ?? 'User'}</Text>
             </View>
             <View style={styles.break} />
 
-            <View style={styles.form}>
-                <Text style={[styles.title, {color: 'black'}]}>User Profile</Text>
-                <View style={{ width: '100%', height: 10 }} />
+            <View style={styles.box}>
+                {loading ?
+                    <View style={styles.activityIndicator}>
+                        <ActivityIndicator color={colors.white} size="large" />
+                    </View>
+                    :
+                    <View style={styles.dashboard}>
+                        <View style={{ alignSelf: 'center' }}>
+                            {user?.email ? <SvgQRCode value={user?.email ? JSON.stringify(user): 'invalid user'} /> : <View />}
+                        </View>
+                        <View style={styles.break} />
 
-                <Box label="Name" text={user?.fullname ?? ''} />
-                <Box label="DOB" text={user?.dob ?? ''} />
-                <Box label="Phone" text={user?.phoneNumber ?? ''} />
-                <Box label="Email" text={user?.email ?? ''} />
+                        <View style={styles.buttonsView}>
+                            <View style={styles.buttonView}>
+                                <Button onPress={()=>navigation.navigate({name: 'UserInfo', params: {details: user}})} title="View Info" bgColor={colors.lightgreen} color="black" />
+                            </View>
+                            {/* <View style={styles.buttonView}>
+                                <Button title="Upload Image" bgColor="tomato" onPress={()=>navigation.navigate({name: 'UploadImage', params: {details: user}})} />
+                            </View> */}
+                        </View>
+                    </View>
+                }
             </View>
         </View>
     </SafeAreaView>
@@ -108,13 +128,32 @@ export default function UserDash({navigation}) {
 }
 
 const styles = StyleSheet.create({
+    activityIndicator: { 
+        width: '100%', 
+        height: 200, 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+    },
+    box: { 
+        width: '90%', 
+        alignSelf: 'center'
+    },
     break: {
         width: '100%',
         height: 20
     },
+    buttonView:{
+        marginBottom: 20
+    },
+    buttonsView: {
+        width: '100%'
+    },
     container: {
         flex: 1,
         backgroundColor: colors.primary
+    },
+    dashboard: {
+        width: '100%'
     },
     form: {
         width: '90%',

@@ -9,6 +9,10 @@ import UserDash from './app/screen/UserDash'
 import Admin from './app/screen/Admin'
 import AdminBoard from './app/screen/AdminBoard'
 import AdminView from './app/screen/AdminView'
+import Scan from './app/screen/Scan'
+import UserInfo from './app/screen/UserInfo'
+import AdminList from './app/screen/AdminList'
+import UploadImage from './app/screen/UploadImage'
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +28,10 @@ export default function App() {
         <Stack.Screen name="Admin" component={Admin} options={{ headerShown: false }} />
         <Stack.Screen name="AdminBoard" component={AdminBoard} options={{ headerShown: false }} />
         <Stack.Screen name="AdminView" component={AdminView} options={{ headerShown: false }} />
+        <Stack.Screen name="Scan" component={Scan} options={{ headerShown: false }} />
+        <Stack.Screen name="UserInfo" component={UserInfo} options={{ headerShown: false }} />
+        <Stack.Screen name="AdminList" component={AdminList} options={{ headerShown: false }} />
+        <Stack.Screen name="UploadImage" component={UploadImage} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

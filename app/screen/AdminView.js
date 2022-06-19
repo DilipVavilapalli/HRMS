@@ -29,7 +29,7 @@ export default function AdminView({route, navigation}) {
             <View style={styles.break} />
 
             <View style={[styles.form, {backgroundColor: colors.white, padding: 10}]}>
-                <Text style={styles.empTitle}>List of Employees Profile</Text>
+                <Text style={[styles.title, {color: 'black'}]}>Employee's Profile</Text>
                 <View style={{ width: '100%', height: 10 }} />
 
                 <Box label="Name" text={route?.params?.details?.fullname ?? ''} />
